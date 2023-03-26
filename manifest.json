@@ -1,0 +1,14 @@
+{
+  "name": "PresenteProfe",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description": "Registro de alumnos",
+  "permissions": [
+    "activeTab"
+  ],
+  "browser_action": {
+    "default_title": "Presente profe",
+    "default_popup": "popup.html"
+  },
+  "background": { "page":"popup.html" }
+}
