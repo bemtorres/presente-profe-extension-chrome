@@ -1,114 +1,98 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Mi extensión</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-      }
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>presente profe extension</title>
+  <link rel="shortcut icon" href="img/icono.png" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
+</head>
 
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
+<body>
+  <div class="container my-2">
+    <div class="row align-items-center rounded-3 border shadow-lg">
+      <div class="my-2 text-center border-bottom">
+        <img src="img/logotext.png" class="img-fluid" alt="Example image" width="200" loading="lazy">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-10 mx-auto">
+              <p class="lead mb-4">
+                <strong>Presenteprofe</strong> es una extensión de Chrome diseñada para ayudar a los profesores a tomar la
+                asistencia de los alumnos de manera rápida y fácil. <br> <small>La extensión proporciona una interfaz simple, intuitiva
+                  e interactiva para registrar la presencia o ausencia de los estudiantes en una clase.</small>
+              </p>
+            </div>
 
-      .b-example-divider {
-        width: 100%;
-        height: 3rem;
-        background-color: rgba(0, 0, 0, .1);
-        border: solid rgba(0, 0, 0, .15);
-        border-width: 1px 0;
-        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
-      }
-
-      .b-example-vr {
-        flex-shrink: 0;
-        width: 1.5rem;
-        height: 100vh;
-      }
-
-      .bi {
-        vertical-align: -.125em;
-        fill: currentColor;
-      }
-
-      .nav-scroller {
-        position: relative;
-        z-index: 2;
-        height: 2.75rem;
-        overflow-y: hidden;
-      }
-
-      .nav-scroller .nav {
-        display: flex;
-        flex-wrap: nowrap;
-        padding-bottom: 1rem;
-        margin-top: -1px;
-        overflow-x: auto;
-        text-align: center;
-        white-space: nowrap;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .btn-bd-primary {
-        --bd-violet-bg: #712cf9;
-        --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
-
-        --bs-btn-font-weight: 600;
-        --bs-btn-color: var(--bs-white);
-        --bs-btn-bg: var(--bd-violet-bg);
-        --bs-btn-border-color: var(--bd-violet-bg);
-        --bs-btn-hover-color: var(--bs-white);
-        --bs-btn-hover-bg: #6528e0;
-        --bs-btn-hover-border-color: #6528e0;
-        --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
-        --bs-btn-active-color: var(--bs-btn-hover-color);
-        --bs-btn-active-bg: #5a23c8;
-        --bs-btn-active-border-color: #5a23c8;
-      }
-      .bd-mode-toggle {
-        z-index: 1500;
-      }
-    </style>
-
-  </head>
-  <body>
-<main>
-  <div class="container my-5">
+            <div class="px-5">
+              <img src="img/presenteprofe.png" class="img-fluid border rounded-3 shadow-lg mb-4" width="500"
+                loading="lazy">
+            </div>
 
 
+            <div class="col-6">
 
-    <div class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg">
+              <ul class="list-group text-start mb-2">
+                <li class="list-group-item d-flex text-center justify-content-center">
+                  <div class="card">
+                    <span class="badge bg-primary" id="alumno-presente">PRESENTE</span>
+                    <span class="badge bg-danger" hidden id="alumno-ausente">AUSENTE</span>
+                    <img class="card-img-top mt-2" width="400px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXJfT2dFse-sTtzL7QEAtmvHxTxT-sPhqWuA&usqp=CAU" alt="" id="alumno-img">
+                    <div class="card-body">
+                      <small id="alumno-id">1</small>
+                      <h4 class="card-title" id="alumno-nombre">Hombre rana triste</h4>
+                      <p class="card-text" id="alumno-rut">111111111</p>
+                      <button id="btn-presente" class="btn btn-success">PRESENTE</button>
+                      <button id="btn-ausente" class="btn btn-danger">AUSENTE</button>
+                      <!-- TRUCO TRUCO -->
+                      <div id="alumno-items-oculto" hidden> </div>
+                    </div>
 
-      <div class="px-4 pt-5 my-5 text-center border-bottom">
-        <h1 class="display-4 fw-bold text-body-emphasis">presenteprofe</h1>
-        <div class="col-lg-6 mx-auto">
-          <p class="lead mb-4">Quickly design and customize responsive mobile-first sites with Bootstrap, the world’s most popular front-end open source toolkit, featuring Sass variables and mixins, responsive grid system, extensive prebuilt components, and powerful JavaScript plugins.</p>
-          <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mb-5">
-            <button type="button" class="btn btn-primary btn-lg px-4 me-sm-3">Primary button</button>
-            <button type="button" class="btn btn-outline-secondary btn-lg px-4">Secondary</button>
+                    <small>
+                      <div class="btn-group mb-2" role="group">
+                        <button type="button" id="btn-preview-alumno" class="btn btn-outline-dark btn-sm"><</button>
+                        <button type="button" id="btn-next-alumno"  class="btn btn-outline-dark btn-sm">></button>
+                      </div>
+
+                    </small>
+                  </div>
+                </li>
+                <li class="list-group-item d-flex">
+                  Presiona las fechas &larr; &rarr; para cambiar de alumno
+                </li>
+                <li class="list-group-item d-flex">
+                  Presiona la fecha hacia arriba <strong class="mx-2">&uarr;</strong> para dejarlo <small><span class="ms-2 badge bg-primary">PRESENTE</span></small>
+                </li>
+                <li class="list-group-item d-flex">
+                  Presiona la fecha hacia abajo <strong class="mx-2">&darr;</strong> para dejarlo <small><span class="ms-2 badge bg-danger">AUSENTE</span></small>
+                </li>
+              </ul>
+            </div>
+            <div class="col-6">
+
+              <ul class="list-group text-start mb-2">
+                <li class="list-group-item d-flex">
+                  Simplificar el proceso de toma de asistencia para los profesores.
+                </li>
+                <li class="list-group-item d-flex">
+                  Reducir el tiempo y esfuerzo necesario para registrar la asistencia de los estudiantes.
+                </li>
+                <li class="list-group-item d-flex">
+                  Proporcionar informes precisos y detallados de asistencia para una fácil revisión y análisis.
+                </li>
+                <li class="list-group-item d-flex">
+                  Permitir a los profesores tomar la asistencia desde cualquier lugar con acceso a Internet.
+                </li>
+                <li class="list-group-item d-flex">
+                  Facilitar la gestión de datos de asistencia y reducir la posibilidad de errores humanos.
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-        <!-- <div class="overflow-hidden" style="max-height: 30vh;">
-          <div class="container px-5">
-            <img src="bootstrap-docs.png" class="img-fluid border rounded-3 shadow-lg mb-4" alt="Example image" width="700" height="500" loading="lazy">
-          </div>
-        </div> -->
       </div>
     </div>
   </div>
-
-
-</main>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
-  </body>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script> -->
+</body>
 </html>

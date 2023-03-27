@@ -78,12 +78,30 @@ class Alumno {
   }
 }
 
+let _scriptInit = `
+  try {
+    var asistencias = document.getElementsByClassName("radio-asistencia");
+  }
+  catch(e) {
+    console.log('Variable NO existe, el error es: ' + e.message);
+  }
+`;
 // Busca todos los estado de asistencia y los deja en ausentes
-let _scriptAusenteAsistencia = `
-  let asistencias = document.getElementsByClassName("radio-asistencia");
+let _scriptAllAusenteAsistencia = `
   for (let index = 0; index < asistencias.length; index++) {
     asistencias[index].removeAttribute('checked');
-    if (index % 3 == 0) {
+    if (asistencias[index].value == 0) {
+      asistencias[index].setAttribute('checked','checked');
+      asistencias[index].click();
+    }
+  }
+`;
+
+let _scriptAllPresenteAsistencia = `
+  for (let index = 0; index < asistencias.length; index++) {
+    asistencias[index].removeAttribute('checked');
+
+    if (asistencias[index].value == 1) {
       asistencias[index].setAttribute('checked','checked');
       asistencias[index].click();
     }
@@ -119,13 +137,23 @@ function addAlumno(a) {
 
 // LISTA - Deja a todos inactivos
 function handleInasistencia() {
-  var btnInasisntecia = document.getElementById('btn-inasistencia');
+  var btnAusentes = document.getElementById('btn-inasistencia');
+  var btnPresentes = document.getElementById('btn-inasistencia-presente');
 
-  btnInasisntecia.addEventListener('click', function() {
+  btnAusentes.addEventListener('click', function() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.executeScript(
             tabs[0].id,
-            {code: _scriptAusenteAsistencia}
+            {code: _scriptAllAusenteAsistencia}
+        );
+    });
+  });
+
+  btnPresentes.addEventListener('click', function() {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.executeScript(
+            tabs[0].id,
+            {code: _scriptAllPresenteAsistencia}
         );
     });
   });
@@ -330,9 +358,19 @@ chrome.runtime.onInstalled.addListener(function(details){
 	}
 });
 
+// Inicia todo los script de variables
+function init() {
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+    chrome.tabs.executeScript(
+        tabs[0].id,
+        {code: _scriptInit}
+      );
+  });
+}
 
 // ACCIONES
 document.addEventListener('DOMContentLoaded', function() {
+  init();
   handleInasistencia();
   handlePanel();
   handlePresenteProfe();

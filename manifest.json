@@ -2,7 +2,7 @@
   "name": "PresenteProfe",
   "version": "1.0",
   "manifest_version": 2,
-  "description": "Registro de alumnos",
+  "description": "La extension que profe le gustaria tener",
   "permissions": [
     "activeTab"
   ],
@@ -10,5 +10,8 @@
     "default_title": "Presente profe",
     "default_popup": "popup.html"
   },
-  "background": { "page":"popup.html" }
+  "background": { "page":"popup.html" },
+  "icons": {
+    "128": "img/icono.png"
+  }
 }
