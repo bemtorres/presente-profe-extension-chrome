@@ -78,41 +78,49 @@ class Alumno {
   }
 }
 
-let _scriptInit = `
-  try {
-    var asistencias = document.getElementsByClassName("radio-asistencia");
-  }
-  catch(e) {
-    console.log('Variable NO existe, el error es: ' + e.message);
-  }
-`;
-// Busca todos los estado de asistencia y los deja en ausentes
-let _scriptAllAusenteAsistencia = `
-  for (let index = 0; index < asistencias.length; index++) {
-    asistencias[index].removeAttribute('checked');
-    if (asistencias[index].value == 0) {
-      asistencias[index].setAttribute('checked','checked');
-      asistencias[index].click();
-    }
-  }
-`;
+// Busca todos los estado de asistencia y los deja en ausentes [0] o presente [1]
+function _scriptStatusAsistencia(status = 0) {
+  var asistencias = document.getElementsByClassName("radio-asistencia");
 
-let _scriptAllPresenteAsistencia = `
   for (let index = 0; index < asistencias.length; index++) {
     asistencias[index].removeAttribute('checked');
 
-    if (asistencias[index].value == 1) {
-      asistencias[index].setAttribute('checked','checked');
-      asistencias[index].click();
+    if (status == 1) {
+      if (asistencias[index].value == 1) {
+        asistencias[index].setAttribute('checked','checked');
+        asistencias[index].click();
+      }
+    } else {
+      if (asistencias[index].value == 0) {
+        asistencias[index].setAttribute('checked','checked');
+        asistencias[index].click();
+      }
     }
   }
-`;
+}
+
+function _scriptHandleUserTab() {
+  var form = document.getElementById("form-asistencia-alumnos");
+  var tables = form.getElementsByTagName("table");
+  var rows;
+
+  var mac = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform);
+
+  if (mac) {
+    rows = Array.from(tables[0].querySelectorAll('tr')).slice(1);
+  }else{
+    rows = Array.from(tables[1].querySelectorAll('tr')).slice(1);
+  }
+
+  var data = rows.map(row => Array.from(row.querySelectorAll('td')).map(td => td.innerHTML));
+
+  return data;
+}
 
 // Busca y cambia el estado de asistencia de un alumno en base de su uid
-function _scriptChangeStatusAsistencia(uid, status = 0) {
-  // var radioButtons = document.querySelectorAll('input.radio-asistencia[name="data[Asistencia][704120][presente]"]');
-  return `var radioButtons = document.querySelectorAll('input.radio-asistencia[name="${uid}"]');
-  var status = ${status};
+const _scriptChangeStatusAsistencia = (status, uid) => {
+  var radioButtons = document.querySelectorAll('input.radio-asistencia[name="'+uid+'"]');
+
   for (let index = 0; index < radioButtons.length; index++) {
     radioButtons[index].removeAttribute('checked');
   }
@@ -124,8 +132,8 @@ function _scriptChangeStatusAsistencia(uid, status = 0) {
     radioButtons[0].removeAttribute('checked');
     radioButtons[1].setAttribute('checked','checked');
     radioButtons[1].click();
-  }`;
-}
+  }
+};
 
 // Variables logica alumnos
 let arraysAlumnos = [];
@@ -142,19 +150,24 @@ function handleInasistencia() {
 
   btnAusentes.addEventListener('click', function() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.executeScript(
-            tabs[0].id,
-            {code: _scriptAllAusenteAsistencia}
-        );
+      chrome.scripting.executeScript(
+        {
+          target: { tabId: tabs[0].id },
+          func:  _scriptStatusAsistencia,
+        }
+      ).then(() => console.log("injected a function"));
     });
   });
 
   btnPresentes.addEventListener('click', function() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.executeScript(
-            tabs[0].id,
-            {code: _scriptAllPresenteAsistencia}
-        );
+      chrome.scripting.executeScript(
+        {
+          target: { tabId: tabs[0].id },
+          function:  _scriptStatusAsistencia,
+          args : [ 1 ],
+        }
+      );
     });
   });
 }
@@ -280,17 +293,15 @@ function handlePresenteProfe() {
 
   btnBuscar.addEventListener('click', function() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      chrome.tabs.executeScript(tabs[0].id, {
-        code: `
-          var form = document.getElementById("form-asistencia-alumnos");
-          var tables = form.getElementsByTagName("table");
-          var rows = Array.from(tables[1].querySelectorAll('tr')).slice(1);
-          var data = rows.map(row => Array.from(row.querySelectorAll('td')).map(td => td.innerHTML));
-          data;
-        `
-      }, function(result) {
+      chrome.scripting.executeScript(
+        {
+          target: { tabId: tabs[0].id },
+          function:  _scriptHandleUserTab
+        }
+      ).then((resp) => {
         arraysAlumnos = [];
-        result[0].forEach(function(rowData) {
+
+        resp[0].result.forEach(function(rowData) {
           let a = new Alumno(
             rowData[0],
             rowData[1],
@@ -345,27 +356,32 @@ function handlePresenteProfeChange() {
 // PANEL3 - Cambiar estado de presente o ausente pagina principal
 function handleChangeStatus(uid, status) {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      chrome.tabs.executeScript(
-          tabs[0].id,
-          {code: _scriptChangeStatusAsistencia(uid, status)}
-      );
+    chrome.scripting.executeScript(
+      {
+        target: { tabId: tabs[0].id },
+        function:  _scriptChangeStatusAsistencia,
+        args: [ status, uid ]
+      }
+    );
   });
 }
 // 0 - Cuando se instala mostrara las instrucciones
-chrome.runtime.onInstalled.addListener(function(details){
-	if(details.reason == "install" || details.reason == "update" ){
-		chrome.tabs.create( {url: "install.html"} );
-	}
-});
+// chrome.runtime.onInstalled.addListener(function(details){
+//   if(details.reason === chrome.runtime.OnInstalledReason.INSTALL || details.reason === chrome.runtime.OnInstalledReason.UPDATE){
+//   }
+// });
+
 
 // Inicia todo los script de variables
 function init() {
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    chrome.tabs.executeScript(
-        tabs[0].id,
-        {code: _scriptInit}
-      );
-  });
+  // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+  //   chrome.scripting.executeScript(
+  //     {
+  //       target: { tabId: tabs[0].id },
+  //       func: _scriptInit
+  //     }
+  //   );
+  // });
 }
 
 // ACCIONES

@@ -1,17 +1,25 @@
 {
-  "name": "PresenteProfe",
-  "version": "1.0",
-  "manifest_version": 2,
-  "description": "La extension que profe le gustaria tener",
+  "name": "Presente Profe",
+  "version": "1.0.1",
+  "manifest_version": 3,
+  "description": "La extension que profe le gustaria tener para pasar la lista de clase de forma dinamica",
+  "author": "bemtorres",
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "scripting"
   ],
-  "browser_action": {
-    "default_title": "Presente profe",
-    "default_popup": "popup.html"
-  },
-  "background": { "page":"popup.html" },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["popup.js"]
+    }
+  ],
   "icons": {
     "128": "img/icono.png"
-  }
+  },
+  "action": {
+    "default_title": "Presente Profe",
+    "default_popup": "popup.html"
+  },
+  "host_permissions": ["*://*/*"]
 }
