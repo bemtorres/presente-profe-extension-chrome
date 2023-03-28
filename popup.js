@@ -104,13 +104,18 @@ function _scriptHandleUserTab() {
   var tables = form.getElementsByTagName("table");
   var rows;
 
-  var mac = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform);
-
-  if (mac) {
+  if (tables.length == 1) {
     rows = Array.from(tables[0].querySelectorAll('tr')).slice(1);
-  }else{
-    rows = Array.from(tables[1].querySelectorAll('tr')).slice(1);
+  } else {
+    var mac = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform);
+
+    if (mac) {
+      rows = Array.from(tables[0].querySelectorAll('tr')).slice(1);
+    }else{
+      rows = Array.from(tables[1].querySelectorAll('tr')).slice(1);
+    }
   }
+
 
   var data = rows.map(row => Array.from(row.querySelectorAll('td')).map(td => td.innerHTML));
 
