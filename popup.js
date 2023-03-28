@@ -366,6 +366,13 @@ function handleChangeStatus(uid, status) {
   });
 }
 // 0 - Cuando se instala mostrara las instrucciones
+// chrome.runtime.onInstalled.addListener(details => {
+//   if (details.reason === chrome.runtime.OnInstalledReason.INSTALL) {
+//     chrome.runtime.setUninstallURL('https://example.com/extension-survey');
+//   }
+// });
+
+
 // chrome.runtime.onInstalled.addListener(function(details){
 //   if(details.reason === chrome.runtime.OnInstalledReason.INSTALL || details.reason === chrome.runtime.OnInstalledReason.UPDATE){
 //   }
@@ -392,5 +399,12 @@ document.addEventListener('DOMContentLoaded', function() {
   handlePresenteProfe();
   handlePresenteProfeLista();
   handlePresenteProfeChange();
+
+  var showme = document.getElementById('showme');
+
+  showme.addEventListener('click', function() {
+    const url = chrome.runtime.getURL('readme.html');
+    chrome.tabs.create({ url });
+  });
 });
 
