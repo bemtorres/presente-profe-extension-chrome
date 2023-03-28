@@ -160,7 +160,7 @@ function handleInasistencia() {
           target: { tabId: tabs[0].id },
           func:  _scriptStatusAsistencia,
         }
-      ).then(() => console.log("injected a function"));
+      );
     });
   });
 
