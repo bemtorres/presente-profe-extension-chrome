@@ -6,7 +6,11 @@
     <link rel="shortcut icon" href="img/icono.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script> -->
-
+    <style>
+      .cursor {
+        cursor: pointer;
+      }
+    </style>
   </head>
   <body>
     <main>
@@ -89,8 +93,20 @@
       </div>
     </main>
 
-    <div class="text-center mt-2">
-      <small id="showme"><strong>@bemtorres</strong></small>
+    <div class="text-center mt-2 row">
+      <div class="col">
+        <small id="showme"><strong>@bemtorres</strong></small>
+      </div>
+      <div class="col">
+        <span class="badge bg-dark cursor" id="btn-voice">ON 🔈</span>
+      </div>
+      <div class="col">
+        <small>
+          <select class="form-select form-select-sm" name="select-voices" id="select-voices">
+          </select>
+        </small>
+      </div>
+      </small>
     </div>
 
     <script src="popup.js"></script>

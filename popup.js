@@ -46,7 +46,6 @@ const IMAGES = [
   'https://w7.pngwing.com/pngs/972/862/png-transparent-patrick-of-sponge-bob-patrick-star-internet-meme-know-your-meme-paddy-cartoon-meme-fictional-character.png',
   'https://w7.pngwing.com/pngs/728/846/png-transparent-youtube-know-your-meme-knuckles-the-echidna-drumroll-please-youtube-cartoon-meme-fictional-character.png',
   'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXJfT2dFse-sTtzL7QEAtmvHxTxT-sPhqWuA&usqp=CAU'
-
 ,];
 
 function getRandomArbitrary(min, max) {
@@ -148,6 +147,79 @@ function addAlumno(a) {
   arraysAlumnos.push(a);
 }
 
+// ******************************
+//  ****** TEXTO TO SPEECH ******
+// Crea un objeto de síntesis de voz
+const synth = window.speechSynthesis;
+
+// Almacena el estado de texto a voz
+var isSpeaking = false;
+var muteSpeaking = true;
+var voiceSelected;
+
+function buildSelectVoicesSpeech() {
+  const voices = synth.getVoices();
+  voiceSelected = voices[12];
+
+  var selectVoices = document.getElementById('select-voices');
+
+  voices.forEach((voice, index) => {
+    const option = document.createElement('option');
+    option.value = index;
+    option.text = `${voice.name} (${voice.lang})`;
+    selectVoices.appendChild(option);
+  });
+
+  document.getElementById('select-voices').addEventListener('change', function() {
+    var sv = document.getElementById('select-voices');
+    voiceSelected = voices[sv.value];
+  });
+}
+
+function handleSpeak() {
+  var btnVoice = document.getElementById('btn-voice');
+  btnVoice.addEventListener('click', function() {
+    muteSpeaking = !muteSpeaking;
+
+    // var btn_voice = document.getElementById('btn-voice');
+    btnVoice.classList.remove('bg-success');
+    btnVoice.classList.remove('bg-dark');
+
+    if(!muteSpeaking) {
+      btnVoice.classList.add('bg-success');
+    } else {
+      btnVoice.classList.add('bg-dark');
+    }
+  });
+
+
+}
+
+// Función que activa el texto a voz
+function playSpeak(text) {
+  if (!muteSpeaking) {
+    const utterance = new SpeechSynthesisUtterance(text);
+
+    utterance.voice = voiceSelected;
+
+    synth.speak(utterance);
+    isSpeaking = true;
+  }
+}
+
+function handleVoiceChange(evt) {
+  console.log(evt);
+  // voiceSelected = voices[evt.value];
+}
+
+// Función que desactiva el texto a voz
+function stopSpeaking() {
+  synth.cancel();
+  isSpeaking = false;
+}
+// ****** TEXTO TO SPEECH ******
+// ******************************
+
 // LISTA - Deja a todos inactivos
 function handleInasistencia() {
   var btnAusentes = document.getElementById('btn-inasistencia');
@@ -223,6 +295,9 @@ function handlePasarLista(item) {
   img.src = alumno.img;
   nombre.innerHTML = alumno.getNombreCompleto();
   rut.innerHTML = alumno.rut;
+
+  stopSpeaking();
+  playSpeak(alumno.nombre + ' ' + alumno.appaterno);
 
   if (alumno.uid === null ) {
     oculto.innerHTML = alumno.items[0];
@@ -383,6 +458,20 @@ function init() {
   // });
 }
 
+
+
+// document.addEventListener('keydown', function(event) {
+//   // Si la tecla L es presionada y el texto a voz no está activado
+//   if (event.keyCode === 76 && !isSpeaking) {
+//     playSpeak();
+//   }
+//   // Si la tecla M es presionada y el texto a voz está activado
+//   else if (event.keyCode === 77 && isSpeaking) {
+//     stopSpeaking();
+//   }
+// });
+
+
 // ACCIONES
 document.addEventListener('DOMContentLoaded', function() {
   init();
@@ -391,9 +480,10 @@ document.addEventListener('DOMContentLoaded', function() {
   handlePresenteProfe();
   handlePresenteProfeLista();
   handlePresenteProfeChange();
+  handleSpeak();
+  buildSelectVoicesSpeech();
 
   var showme = document.getElementById('showme');
-
   showme.addEventListener('click', function() {
     const url = chrome.runtime.getURL('readme.html');
     chrome.tabs.create({ url });
