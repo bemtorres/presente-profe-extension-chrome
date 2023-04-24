@@ -2,7 +2,7 @@
   "name": "Presente Profe",
   "version": "1.2.0",
   "manifest_version": 3,
-  "description": "La extension que profe le gustaria tener para pasar la lista de clase de forma didactica y entretenida",
+  "description": "La extension que a todo profe le gustaría tener para pasar la lista de clase de forma didactica y entretenida",
   "author": "bemtorres",
   "permissions": [
     "activeTab",
